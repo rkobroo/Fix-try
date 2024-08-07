@@ -37,12 +37,12 @@ module.exports = {
 			missingMessage: "𝙔𝙊𝙐𝙍 𝙈𝙀𝙎𝙎𝘼𝙂𝙀 ....? 🧛",
 			sendByGroup: "",
 			sendByUser: "",
-			content: "\n🍷 ════ •⊰❂⊱• ════ 🍷\n\n『%1』\n🍷 ════ •⊰❂⊱• ════ 🍷\n 🧛𝗗𝗥𝗔𝗖𝗨𝗟𝗔🧛",
+			content: "\n🍷 ════ •⊰❂⊱• ════ 🍷\n\n『%1』\n🍷 ════ •⊰❂⊱• ════ 🍷\n 🧛𝗥𝗞𝗢 𝗕𝗥𝗢🧛",
 			success: "Sent your message to %1 admin successfully!\n%2",
 			failed: "An error occurred while sending your message to %1 admin\n%2\nCheck console for more details",
-			reply: "╔════ ≪ 🍷 ≫ ════╗\n\n『%2』\n╚════ ≪ 🍷 ≫ ════╝\n🧛𝗗𝗥𝗔𝗖𝗨𝗟𝗔🧛",
+			reply: "╔════ ≪ 🍷 ≫ ════╗\n\n『%2』\n╚════ ≪ 🍷 ≫ ════╝\n🧛𝗥𝗞𝗢 𝗕𝗥𝗢🧛",
 			replySuccess: "Sent your reply to admin successfully!",
-			feedback: " ━━━━━━━━━━━━━━\n\n 『%4』\n ━━━━━━━━━━━━━━\n🧛𝘿𝙍𝘼𝘾𝙐𝙇𝘼🧛",
+			feedback: " ━━━━━━━━━━━━━━\n\n 『%4』\n ━━━━━━━━━━━━━━\n🧛𝗥𝗞𝗢 𝗕𝗥𝗢🧛",
 			replyUserSuccess: "Sent your reply to user successfully!",
 			noAdmin: "Bot has no admin at the moment"
 		}
@@ -56,7 +56,7 @@ module.exports = {
 		if (config.adminBot.length == 0)
 			return message.reply(getLang("noAdmin"));
 		const senderName = await usersData.getName(senderID);
-		const msg = "==𓅓 𝗖𝗔𝗟𝗟 𝗗𝗥𝗔𝗖𝗨𝗟𝗔 𓅓=="
+		const msg = "==𓅓 𝗖𝗔𝗟𝗟 𝗥𝗞𝗢 𝗕𝗥𝗢𓅓=="
 			+ `\n- User Name: 🧸${senderName}🧸`
 			+ `\n- User ID: 👑${senderID}👑`
 			+ (isGroup ? getLang("sendByGroup", (await threadsData.get(threadID)).threadName, threadID) : getLang("sendByUser"));
