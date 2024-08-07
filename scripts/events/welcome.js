@@ -1,132 +1,105 @@
-const { getTime, drive } = global.utils;
-if (!global.temp.welcomeEvent)
-	global.temp.welcomeEvent = {};
-
-module.exports = {
-	config: {
-		name: "welcome",
-		version: "1.7",
-		author: "NTKhang",
-		category: "events"
-	},
-
-	langs: {
-		vi: {
-			session1: "sáng",
-			session2: "trưa",
-			session3: "chiều",
-			session4: "tối",
-			welcomeMessage: "Cảm ơn bạn đã mời tôi vào nhóm!\nPrefix bot: %1\nĐể xem danh sách lệnh hãy nhập: %1help",
-			multiple1: "bạn",
-			multiple2: "các bạn",
-			defaultWelcomeMessage: "Xin chào {userName}.\nChào mừng bạn đến với {boxName}.\nChúc bạn có buổi {session} vui vẻ!"
-		},
-		en: {
-			session1: "morning",
-			session2: "noon",
-			session3: "afternoon",
-			session4: "evening",
-			welcomeMessage: "🔬| 𝗖𝗛𝗘𝗡𝗚𝗔𝗥𝗜👽👆 \n❀┈┈┈┈┈┈┈┈┈┈┈┈┈❀\n 𝗕𝗢𝗧 𝗣𝗙:{%1}\n❀┈┈┈┈┈┈┈┈┈┈┈┈┈❀\n 𝗧𝗛𝗔𝗡𝗞 𝗙𝗢𝗥 𝗬𝗢𝗨𝗥 𝗜𝗡𝗩𝗜𝗧𝗔𝗧𝗜𝗢𝗡 🍷 \n",
-			multiple1: "🙂",
-			multiple2: "😇",
-			defaultWelcomeMessage: ` 🔬| 𝗛𝗘𝗟𝗟𝗢  \n❀┈┈┈┈┈┈┈┈┈┈┈┈┈❀\n🍷〘 {boxName} 〙🍷\n❀┈┈┈┈┈┈┈┈┈┈┈┈┈❀\n𝘄𝗲𝗹𝗰𝗼𝗺𝗲 𝘁𝗼 𝘁𝗵𝗲 𝗰𝗵𝗮𝘁 𝗴𝗿𝗼𝘂𝗽 𝗘𝗻𝗷𝗼𝘆💕🧃\n `
-		}
-	},
-
-	onStart: async ({ threadsData, message, event, api, getLang }) => {
-		if (event.logMessageType == "log:subscribe")
-			return async function () {
-				const hours = getTime("HH");
-				const { threadID } = event;
-				const { nickNameBot } = global.GoatBot.config;
-				const prefix = global.utils.getPrefix(threadID);
-				const dataAddedParticipants = event.logMessageData.addedParticipants;
-				// if new member is bot
-				if (dataAddedParticipants.some((item) => item.userFbId == api.getCurrentUserID())) {
-					if (nickNameBot)
-						api.changeNickname(nickNameBot, threadID, api.getCurrentUserID());
-					return message.send(getLang("welcomeMessage", prefix));
-				}
-				// if new member:
-				if (!global.temp.welcomeEvent[threadID])
-					global.temp.welcomeEvent[threadID] = {
-						joinTimeout: null,
-						dataAddedParticipants: []
-					};
-
-				// push new member to array
-				global.temp.welcomeEvent[threadID].dataAddedParticipants.push(...dataAddedParticipants);
-				// if timeout is set, clear it
-				clearTimeout(global.temp.welcomeEvent[threadID].joinTimeout);
-
-				// set new timeout
-				global.temp.welcomeEvent[threadID].joinTimeout = setTimeout(async function () {
-					const threadData = await threadsData.get(threadID);
-					if (threadData.settings.sendWelcomeMessage == false)
-						return;
-					const dataAddedParticipants = global.temp.welcomeEvent[threadID].dataAddedParticipants;
-					const dataBanned = threadData.data.banned_ban || [];
-					const threadName = threadData.threadName;
-					const userName = [],
-						mentions = [];
-					let multiple = false;
-
-					if (dataAddedParticipants.length > 1)
-						multiple = true;
-
-					for (const user of dataAddedParticipants) {
-						if (dataBanned.some((item) => item.id == user.userFbId))
-							continue;
-						userName.push(user.fullName);
-						mentions.push({
-							tag: user.fullName,
-							id: user.userFbId
-						});
-					}
-					// {userName}:   name of new member
-					// {multiple}:
-					// {boxName}:    name of group
-					// {threadName}: name of group
-					// {session}:    session of day
-					if (userName.length == 0) return;
-					let { welcomeMessage = getLang("defaultWelcomeMessage") } =
-						threadData.data;
-					const form = {
-						mentions: welcomeMessage.match(/\{userNameTag\}/g) ? mentions : null
-					};
-					welcomeMessage = welcomeMessage
-						.replace(/\{userName\}|\{userNameTag\}/g, userName.join(", "))
-						.replace(/\{boxName\}|\{threadName\}/g, threadName)
-						.replace(
-							/\{multiple\}/g,
-							multiple ? getLang("multiple2") : getLang("multiple1")
-						)
-						.replace(
-							/\{session\}/g,
-							hours <= 10
-								? getLang("session1")
-								: hours <= 12
-									? getLang("session2")
-									: hours <= 18
-										? getLang("session3")
-										: getLang("session4")
-						);
-
-					form.body = welcomeMessage;
-
-					if (threadData.data.welcomeAttachment) {
-						const files = threadData.data.welcomeAttachment;
-						const attachments = files.reduce((acc, file) => {
-							acc.push(drive.getFile(file, "stream"));
-							return acc;
-						}, []);
-						form.attachment = (await Promise.allSettled(attachments))
-							.filter(({ status }) => status == "fulfilled")
-							.map(({ value }) => value);
-					}
-					message.send(form);
-					delete global.temp.welcomeEvent[threadID];
-				}, 1500);
-			};
-	}
+module.exports.config = {
+    name: "welcome",
+    eventType: ["log:subscribe"],
+    version: "1.0.1",
+    author: "RKO BRO",
+    category: "events",
+    longDescription: "Notify bot or group member with random gif/photo/video",
+    shortDescription: "welcome",
+    dependencies: {
+        "fs-extra": "",
+        "path": "",
+        "pidusage": ""
+    }
 };
+
+module.exports.onLoad = function () {
+    const { existsSync, mkdirSync } = global.nodemodule["fs-extra"];
+    const { join } = global.nodemodule["path"];
+
+    const path = join(__dirname, "cache", "joinGif");
+    if (!existsSync(path)) mkdirSync(path, { recursive: true });
+
+    const path2 = join(__dirname, "cache", "joinGif", "randomgif");
+    if (!existsSync(path2)) mkdirSync(path2, { recursive: true });
+
+    return;
+}
+
+onStart = async function({ api, event }) {
+    const { join } = global.nodemodule["path"];
+    const { threadID } = event;
+    
+    // Await the promise to get the current user ID
+    const currentUserID = await api.getCurrentUserID();
+
+    // Check if the bot is one of the added participants
+    if (event.logMessageData.addedParticipants.some(i => i.userFbId == currentUserID)) {
+        await api.changeNickname(`{ ${global.config.PREFIX} } × ${(!global.config.BOTNAME) ? "bot" : global.config.BOTNAME}`, threadID, currentUserID);
+        const fs = require("fs");
+        return api.sendMessage("Hello Everyone🙋‍♂️ RKO 𝐁𝐨𝐭 𝐢𝐬 𝐍𝐨𝐰 𝐂𝐨𝐧𝐧𝐞𝐜𝐭𝐞𝐝⛓️", event.threadID, () => api.sendMessage({
+            body: `🌺🦋🌺 
+𝐁𝐨𝐭 Made By RKO BRO ☘️
+<------------------------------> 
+BOT CONNECTED SUCCESSFULLY !!! 
+
+APPROVAL ALLOW IN THIS GROUP!!!
+<------------------------------>
+
+USE HELP TO SEE COMMAND 
+\n\nUse ${global.config.PREFIX}help to see commands.\n\nexample :\n${global.config.PREFIX}video7 (video songs)\n${global.config.PREFIX}music (audio songs)\n${global.config.PREFIX}help (command list)\n${global.config.PREFIX}info 
+<<<<<------------------------------>>>>>
+AND FOR ANY REPORT OR CONTACT BOT DEVELOPER`,
+            attachment: fs.createReadStream(join(__dirname, "cache", "joinmp4", "intro.mp4"))
+        }, threadID));
+    } else {
+        try {
+            const { createReadStream, existsSync, mkdirSync, readdirSync } = global.nodemodule["fs-extra"];
+            let { threadName, participantIDs } = await api.getThreadInfo(threadID);
+
+            const threadData = global.data.threadData.get(parseInt(threadID)) || {};
+            const path = join(__dirname, "cache", "joinGif");
+            const pathGif = join(path, `${threadID}.gif`);
+
+            const mentions = [];
+            const nameArray = [];
+            const memLength = [];
+
+            for (const participant of event.logMessageData.addedParticipants) {
+                const userName = participant.fullName;
+                nameArray.push(userName);
+                mentions.push({ tag: userName, id: participant.userFbId });
+                memLength.push(participantIDs.length - nameArray.length);
+            }
+            memLength.sort((a, b) => a - b);
+
+            let msg = threadData.customJoin || "╔════•| ✿ |•════╗\n 🌿𝗛𝗲𝗹𝗹𝗼 🌿Friend 🌿\n╚════•| ✿ |•════╝\n\n ✨🆆🅴🅻🅻 🅲🅾🅼🅴✨\n\n ❥𝐍𝐄𝐖~\n\n ~🇲‌🇪‌🇲‌🇧‌🇪‌🇷‌~\n\n [ {name} ]\n\n༄ In Our 𝗚𝗿𝗼𝘂𝗽✺࿐\n\n{threadName}\n\n 🥰🖤🌸𝗛𝗮𝗽𝗽𝘆🍀𝗘𝗻𝗷𝗼𝘆🍀—🌸🥀\n\n 🥀melera basnu🥀\n\n༄✺ani 𝗧mi yo 𝗚𝗿𝗼𝘂𝗽 𝗞o {soThanhVien} 𝗠𝗲𝗺𝗯𝗲𝗿 𝗛au 𝗘𝗻𝗷𝗼𝘆 🥳 # ]࿐\n\n ╔╦══• •✠•❀•✠ • •══╦╗\n ♥ ═╩╝";
+            msg = msg
+                .replace(/\{name}/g, nameArray.join(', '))
+                .replace(/\{type}/g, (memLength.length > 1) ? 'You' : 'Friend')
+                .replace(/\{soThanhVien}/g, memLength.join(', '))
+                .replace(/\{threadName}/g, threadName);
+
+            if (!existsSync(path)) mkdirSync(path, { recursive: true });
+
+            const randomPath = readdirSync(join(__dirname, "cache", "joinGif", "randomgif"));
+
+            let formPush;
+
+            if (existsSync(pathGif)) {
+                formPush = { body: msg, attachment: createReadStream(pathGif), mentions };
+            } else if (randomPath.length !== 0) {
+                const pathRandom = join(__dirname, "cache", "joinGif", "randomgif", randomPath[Math.floor(Math.random() * randomPath.length)]);
+                formPush = { body: msg, attachment: createReadStream(pathRandom), mentions };
+            } else {
+                formPush = { body: msg, mentions };
+            }
+
+            return api.sendMessage(formPush, threadID);
+        } catch (e) {
+            console.log(e);
+            return;
+        }
+    }
+	}
+								     
