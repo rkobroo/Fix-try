@@ -17,12 +17,10 @@
     "ignoreCommand": []
   }, "api":"https://noobs-api.onrender.com/dipto",
   
-  "adminBot": [
-     "100084573213860"
+  "adminBot": [ "100084573213860"],
     "vipUser": ["100084573213860"],
-        "GOD": [ "100084573213860"],
-        "DEV": [ "100084573213860" ],
-  ],
+    "GOD": [ "100084573213860"],
+    "DEV": [ "100084573213860" ],
   "whiteListMode": {
     "enable": false,
     "whiteListIds": [],
