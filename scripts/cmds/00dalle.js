@@ -6,15 +6,16 @@ const baseApiUrl = async () => {
   return base.data.api;
 }; 
 
+
 module.exports = {
   config: {
     name: "dalle",
     aliases: ["bing"],
     version: "1.0",
-    author: "RKO BRO",
+    author: "Dipto",
     countDown: 15,
     role: 0,
-    description: "Generate images powerby by Dalle3",
+    shortDescription: "Generate images powerby by Dalle3",
     longDescription: "Generate images by Unofficial Dalle3",
     category: "download",
     guide: {
@@ -28,12 +29,12 @@ module.exports = {
    return api.sendMessage("❌| Wrong Formet .✅ | Use 17/18 years old boy/girl watching football match on tv and written Dipto and 69 on the back of his Dress , 4k",event.threadID,event.messageID);
   }
     try {
-const tl = ["18iZLRN0RCk3xqtXKeHUJpF3kT35sh_ALzpKr0xJnKG_wynz0fIYNlgLuvomDUPTZkG0fZv3L3D-zC5kjberjRSD_W9Pp3mww52NtMzSfT78IkTTevb9Q9shjHwUpesC0PJwspI4oUQSxnvZeuw1KaUn_YMiSNT6K3vVJrvmYuub-AJj0Fb4wlxECeN8uAuKoPr6NOmllO48ag01NG6SGXQ","1lBMqom_XswLl3wdTuwIc1eCF3x6tR0PgBJ9d9BovCK6OPeXY1iVpnKJ1H_ueHSaHZKJ_M-SU_UxpSI8ispL57c9mxd_psY-S4MS-lhbOQOig6v_O0aVFcKh-FADgYxa6eDWffOunheVE80qeG7X-8W1NmfDUFoinktWivgqNVLm2kdG__eO1ktElrDgRxilisRcZalgkii0HCD9LN1AXzg"];
-const cookies = tl[Math.floor(Math.random() * tl.length)];
+      const fff = ["1DL3Fp0XEmuaF5imSu4uWGjCwCi4FSnZ09QZ4biqb4NNYSB8n9Ulx6zYqSd21uf9LwT7wzU2ej96J4TpvRlw9R1rrb5Jgvwz3K_xZppUYboI9aT4nzKoIUFvQP08aOjolSXVpAXshwGeUI568VpwkRjIBiGP_hmt0dvOIV8BTh4en7mk8n3MvQ45iiODAcqhhRABseRlmjyVkk6JtfpSsCA", "1DL3Fp0XEmuaF5imSu4uWGjCwCi4FSnZ09QZ4biqb4NNYSB8n9Ulx6zYqSd21uf9LwT7wzU2ej96J4TpvRlw9R1rrb5Jgvwz3K_xZppUYboI9aT4nzKoIUFvQP08aOjolSXVpAXshwGeUI568VpwkRjIBiGP_hmt0dvOIV8BTh4en7mk8n3MvQ45iiODAcqhhRABseRlmjyVkk6JtfpSsCA"]
+        const col = fff[Math.floor(Math.random() * fff.length)]
       const w = await api.sendMessage("Wait koro baby < 😽", event.threadID);
   
-const response = await axios.get(`${await baseApiUrl()}/dalle?prompt=${prompt}&key=dipto008&cookie=${cookies}`)
-      const data = response.data.imgUrls;
+const response = await axios.get(`${await baseApiUrl()}/dalle?prompt=${prompt}&key=dipto008&cookies=${col}`)
+      var data = response.data.imgUrls;
       if (!data || data.length === 0) {
         api.sendMessage("Empty response or no images generated.",event.threadID,event.messageID);
       }
@@ -41,18 +42,22 @@ const response = await axios.get(`${await baseApiUrl()}/dalle?prompt=${prompt}&k
       for (let i = 0; i < data.length; i++) {
         const imgUrl = data[i];
         const imgResponse = await axios.get(imgUrl, { responseType: 'arraybuffer' });
-        const imgPath = path.join(__dirname, 'cache', `${i + 1}.jpg`);
+        const imgPath = path.join(__dirname, 'dvassests', `${i + 1}.jpg`);
         await fs.outputFile(imgPath, imgResponse.data);
         diptoo.push(fs.createReadStream(imgPath));
       }
       await api.unsendMessage(w.messageID);
       await api.sendMessage({
-  body: `✅ |Naw Baby Tumar Generated Pic<😘`,
+  body: `✅ | Here's Your Generated Photo<😘`,
         attachment: diptoo
       },event.threadID, event.messageID);
     } catch (error) {
       console.error(error);
       await api.sendMessage(`Generation failed!\nError: ${error.message}`,event.threadID, event.messageID);
+    } finally {
+      for (let ii; ii < data.length; ii++){
+           fs.unlinkSync(__dirname, 'dvassests', `${i + 1}.jpg`);
+      }
     }
   }
-}
+}  //1DL3Fp0XEmuaF5imSu4uWGjCwCi4FSnZ09QZ4biqb4NNYSB8n9Ulx6zYqSd21uf9LwT7wzU2ej96J4TpvRlw9R1rrb5Jgvwz3K_xZppUYboI9aT4nzKoIUFvQP08aOjolSXVpAXshwGeUI568VpwkRjIBiGP_hmt0dvOIV8BTh4en7mk8n3MvQ45iiODAcqhhRABseRlmjyVkk6JtfpSsCA","1lBMqom_XswLl3wdTuwIc1eCF3x6tR0PgBJ9d9BovCK6OPeXY1iVpnKJ1H_ueHSaHZKJ_M-SU_UxpSI8ispL57c9mxd_psY-S4MS-lhbOQOig6v_O0aVFcKh-FADgYxa6eDWffOunheVE80qeG7X-8W1NmfDUFoinktWivgqNVLm2kdG__eO1ktElrDgRxilisRcZalgkii0HCD9LN1AXzg
