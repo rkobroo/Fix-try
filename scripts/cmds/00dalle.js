@@ -31,7 +31,7 @@ module.exports = {
     try {
       const fff = ["1DL3Fp0XEmuaF5imSu4uWGjCwCi4FSnZ09QZ4biqb4NNYSB8n9Ulx6zYqSd21uf9LwT7wzU2ej96J4TpvRlw9R1rrb5Jgvwz3K_xZppUYboI9aT4nzKoIUFvQP08aOjolSXVpAXshwGeUI568VpwkRjIBiGP_hmt0dvOIV8BTh4en7mk8n3MvQ45iiODAcqhhRABseRlmjyVkk6JtfpSsCA", "1DL3Fp0XEmuaF5imSu4uWGjCwCi4FSnZ09QZ4biqb4NNYSB8n9Ulx6zYqSd21uf9LwT7wzU2ej96J4TpvRlw9R1rrb5Jgvwz3K_xZppUYboI9aT4nzKoIUFvQP08aOjolSXVpAXshwGeUI568VpwkRjIBiGP_hmt0dvOIV8BTh4en7mk8n3MvQ45iiODAcqhhRABseRlmjyVkk6JtfpSsCA"]
         const col = fff[Math.floor(Math.random() * fff.length)]
-      const w = await api.sendMessage("Wait koro baby < 😽", event.threadID);
+      const w = await api.sendMessage("Wait gara baby < 😽", event.threadID);
   
 const response = await axios.get(`${await baseApiUrl()}/dalle?prompt=${prompt}&key=dipto008&cookies=${col}`)
       var data = response.data.imgUrls;
