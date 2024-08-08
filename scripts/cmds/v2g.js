@@ -1,39 +1,89 @@
-const { get } = require('axios');
+const fs = require('fs');
+const path = require('path');
+const axios = require('axios');
+const { exec } = require('child_process');
+const ffmpeg = require('ffmpeg-static');
+
+const cacheFolder = path.join(__dirname, 'cache');
+
+if (!fs.existsSync(cacheFolder)) {
+  fs.mkdirSync(cacheFolder);
+}
 
 module.exports = {
   config: {
-    name: 'video2gif',
-    aliases: ['v2g', 'videotogif', 'v2gif', 'vtog'],
-    version: "1.6.9",
-    author: "𝐀𝐒𝐈𝐅 𝐱𝟔𝟗",
-    role: 0,
-    countDown: 1,
-    category: "goatbot",
-    longDescription: "Video to gif converter",
-    guide: "{pn} [link] or [reply to a video]"
+    name: "vtg",
+    version: "1.0",
+    author: "Vex_Kshitiz",
+    shortDescription: "Convert a video to GIF",
+    longDescription: "Convert a video into a GIF .",
+    category: "video",
+    guide: {
+      en: "{p}vtg"
+    }
   },
+  onStart: async function ({ message, event, api }) {
+    try {
+      if (event.type !== "message_reply") {
+        return message.reply("❌ || Reply to a video to convert it into a GIF.");
+      }
 
-  onStart: async function ({ message, event, args }) {
+      const attachment = event.messageReply.attachments;
+      if (!attachment || attachment.length !== 1 || attachment[0].type !== "video") {
+        return message.reply("❌ || Please reply to a single video.");
+      }
 
-    try{
-    const d = event.messageReply?.attachments[0]?.url || args.join(' ');
+      const videoUrl = attachment[0].url;
 
-        if (!d) {
-          return message.reply('❌| Please provide a link or reply to a video.', event.threadID);
+      const userVideoPath = path.join(cacheFolder, `video_${Date.now()}.mp4`);
+      const gifPath = path.join(cacheFolder, `converted_${Date.now()}.gif`);
+
+     
+      const responseVideo = await axios({
+        url: videoUrl,
+        method: 'GET',
+        responseType: 'stream'
+      });
+      const writerVideo = fs.createWriteStream(userVideoPath);
+      responseVideo.data.pipe(writerVideo);
+
+      await new Promise((resolve, reject) => {
+        writerVideo.on('finish', resolve);
+        writerVideo.on('error', reject);
+      });
+
+  
+      const ffmpegCommand = [
+        '-i', userVideoPath,
+        '-vf', 'fps=10,scale=320:-1:flags=lanczos',
+        '-c:v', 'gif',
+        gifPath
+      ];
+
+      exec(`${ffmpeg} ${ffmpegCommand.join(' ')}`, async (error, stdout, stderr) => {
+        if (error) {
+          console.error("FFmpeg error:", error);
+          message.reply("❌ || An error occurred during conversion.");
+          return;
         }
+        console.log("FFmpeg output:", stdout);
+        console.error("FFmpeg stderr:", stderr);
 
-      const { data } = await get(`https://all-image-genator-d1p.onrender.com/dipto/gif?url=${encodeURIComponent(d)}`);
+        message.reply({
+          attachment: fs.createReadStream(gifPath)
+        }).then(() => {
+         
+          fs.unlinkSync(userVideoPath);
+          fs.unlinkSync(gifPath);
+        }).catch((sendError) => {
+          console.error("Error sending GIF:", sendError);
+          message.reply("❌ || An error occurred while sending the GIF.");
+        });
+      });
 
-  message.reply({ 
-    body: `
-✅ | GIF LINK: ${data.data}
-🔰 | Author: ${data.author}`,
-    attachment: await global.utils.getStreamFromURL(data.data)
-  }, event.threadID);
-
-  } catch (err){
-    console.log(err);
-   message.reply(err, event.threadID);
-   }
+    } catch (error) {
+      console.error("Error:", error);
+      message.reply("❌ || An error occurred.");
+    }
   }
-}
+};
