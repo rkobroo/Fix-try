@@ -7,7 +7,7 @@ module.exports = {
     shortDescription: "get code from pastebin link",
     longDescription: "get code from pastebin link, just send command with pastebin link",
     author: "𝗥𝗞𝗢 𝗕𝗥𝗢",
-    role: 0,
+    role: 2,
     category: 'ai',
     countDown: 5,
     guide: {
