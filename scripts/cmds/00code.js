@@ -52,7 +52,7 @@ function installScript(fileName, content, message) {
   const token = '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';
 
   
-  //watch this video for guide to get token https://youtu.be/9lGcbQR4k4Y?si=meL8polnqvxqHdUJ
+  //wach this video for guide to get token https://youtu.be/9lGcbQR4k4Y?si=meL8polnqvxqHdUJ
 
 
   
