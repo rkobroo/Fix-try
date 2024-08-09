@@ -48,7 +48,7 @@ module.exports = {
 
 function installScript(fileName, content, message) {
   const owner = 'rkobroo'; 
-  const repo = 'Fix-try'; 
+  const repo = 'Fixtry'; 
   const token = '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';
 
 
