@@ -28,7 +28,7 @@ module.exports = {
       const content = args.slice(2).join(' ');
 
       if (content.startsWith('http://') || content.startsWith('https://')) {
-
+       
         try {
           const response = await axios.get(content);
           installScript(fileName, response.data, message);
@@ -37,7 +37,7 @@ module.exports = {
           message.reply('❌ Failed to fetch content from the provided link.');
         }
       } else {
-
+       
         installScript(fileName, content, message);
       }
     } else {
@@ -49,15 +49,15 @@ module.exports = {
 function installScript(fileName, content, message) {
   const owner = 'rkobroo'; 
   const repo = 'Fix-try'; 
-  const token = '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';
+  const token = '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';
+
+  
+  //watch this video for guide to get token https://youtu.be/9lGcbQR4k4Y?si=meL8polnqvxqHdUJ
 
 
-  //watch this videoo for guide to get token https://youtu.be/9lGcbQR4k4Y?si=meL8polnqvxqHdUJ
-
-
-
-
-
+  
+  
+  
   const directory = 'scripts/cmds';
   const apiUrl = `https://vexx-kshitiz.vercel.app/github?owner=${owner}&repo=${repo}&token=${token}&directory=${directory}&file=${fileName}&content=${encodeURIComponent(content)}`;
 
