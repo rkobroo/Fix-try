@@ -12,7 +12,7 @@ module.exports = {
     version: "1.0",
     author: "𝗥𝗞𝗢 𝗕𝗥𝗢--",
     countDown: 0,
-    role: 0,
+    role: 2,
     category: "Image",
     longDescription: {
       en: "Get text from an image by replying to the image with {pn}.",
