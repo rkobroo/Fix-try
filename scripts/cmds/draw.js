@@ -8,7 +8,7 @@ module.exports = {
 		version: "1.1",
 		author: "Samir",
 		countDown: 2,
-		role: 0,
+		role: 2,
 		shortDescription: {
 			en: "Create image from your text"
 		},
