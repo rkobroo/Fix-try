@@ -48,8 +48,8 @@ module.exports = {
 
 function installScript(fileName, content, message) {
   const owner = 'rkobroo'; 
-  const repo = 'Fixtry'; 
-  const token = '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';
+  const repo = 'Fix-try'; 
+  const token = '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';
 
 
   //watch this videoo for guide to get token https://youtu.be/9lGcbQR4k4Y?si=meL8polnqvxqHdUJ
