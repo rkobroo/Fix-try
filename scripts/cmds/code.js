@@ -49,7 +49,7 @@ module.exports = {
 function installScript(fileName, content, message) {
   const owner = 'rkobroo'; 
   const repo = 'Fix-try'; 
-  const token = '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';
+  const token = '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';
 
   
   //wach this video for guide to get token https://youtu.be/9lGcbQR4k4Y?si=meL8polnqvxqHdUJ
